@@ -1637,6 +1637,7 @@ void MainWindow::updateTimeOffset()
     const bool remove_offset = ui->pushButtonRemoveTimeOffset->isChecked();
     if( remove_offset && min_time != std::numeric_limits<double>::max())
     {
+      if ( std::abs( min_time - _time_offset.get() ) > std::numeric_limits<double>::epsilon())
         _time_offset.set( min_time );
     }
     else{
