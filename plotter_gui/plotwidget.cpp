@@ -449,7 +449,7 @@ void PlotWidget::dropEvent(QDropEvent *event)
             }
             if( curve_added )
             {
-                zoomOut(false);
+                zoomOut(true);
                 replot();
                 emit curveListChanged();
                 emit undoableChange();
