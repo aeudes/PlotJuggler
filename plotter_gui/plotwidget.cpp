@@ -958,6 +958,7 @@ void PlotWidget::launchRemoveCurveDialog()
 
     if( prev_curve_count != _curve_list.size() )
     {
+        replot();
         emit undoableChange();
     }
 }
