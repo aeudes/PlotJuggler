@@ -67,7 +67,8 @@ PlotWidget::PlotWidget(PlotDataMapRef &datamap, QWidget *parent):
     _current_transform( TimeseriesQwt::noTransform ),
     _show_line_and_points(false),
     _axisX(nullptr),
-    _time_offset(0.0)
+    _time_offset(0.0),
+    _have_scale(false)
 {
     this->setAcceptDrops( true );
 
@@ -441,6 +442,7 @@ void PlotWidget::dropEvent(QDropEvent *event)
         if( format.contains( "curveslist/add_curve") )
         {
             bool curve_added = false;
+	    bool is_empty = isEmpty();
             while (!stream.atEnd())
             {
                 QString curve_name;
@@ -450,7 +452,14 @@ void PlotWidget::dropEvent(QDropEvent *event)
             }
             if( curve_added )
             {
-                zoomOut(true);
+		if (!_have_scale && is_empty) // (have_scale = (QRectF(0, 1, 1, -1) == currentBoundingRect() )
+		{
+                  zoomOut(false);
+		}  
+		else 
+		{
+                  on_zoomOutVertical_triggered(false);
+		}
                 replot();
                 emit curveListChanged();
                 emit undoableChange();
@@ -714,7 +723,7 @@ void PlotWidget::setScale(QRectF rect, bool emit_signal)
     this->setAxisScale( xBottom, rect.left(), rect.right());
 
     this->updateAxes();
-
+    _have_scale = true;
     if( emit_signal )
     {
         if( isXYPlot()) {
@@ -1042,6 +1051,7 @@ void PlotWidget::zoomOut(bool emit_signal)
     {
         QRectF rect(0, 1, 1, -1);
         this->setScale(rect, false);
+	_have_scale = false;
         return;
     }
 

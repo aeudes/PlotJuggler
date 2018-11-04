@@ -39,6 +39,16 @@ PlotWidget* PlotMatrix::addPlotWidget(unsigned row, unsigned col)
 
     emit plotAdded(plot);
 
+    if ( _horizontal_link && plotCount() > 0 )
+    {
+      PlotWidget *existing_plot = plotAt(0);
+      QRectF bound_act = existing_plot->currentBoundingRect();
+      bound_act.setTop(1.0);
+      bound_act.setBottom(0.0);
+
+      plot->setScale(bound_act, false);
+    }
+
     return plot;
 }
 
@@ -386,8 +396,7 @@ void PlotMatrix::on_singlePlotScaleChanged(PlotWidget *modified_plot, QRectF new
         for ( unsigned i = 0; i< plotCount(); i++ )
         {
             PlotWidget *plot = plotAt(i);
-            if( plot->isEmpty() == false &&
-                    modified_plot != plot &&
+            if(     modified_plot != plot &&
                     plot->isXYPlot() == false)
             {
                 QRectF bound_act = plot->currentBoundingRect();

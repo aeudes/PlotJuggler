@@ -148,6 +148,8 @@ private:
     PlotDataMapRef& _mapped_data;
     TimeseriesQwt::Transform _current_transform;
 
+    bool _have_scale;
+
     bool addCurve(const std::string &name);
 
     void buildActions();
