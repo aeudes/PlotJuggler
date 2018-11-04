@@ -165,14 +165,14 @@ void PlotWidget::buildActions()
     iconZoomH.addFile(QStringLiteral(":/icons/resources/resize_horizontal.png"), QSize(26, 26));
     _action_zoomOutHorizontally = new QAction(tr("&Zoom Out Horizontally"), this);
     _action_zoomOutHorizontally->setIcon(iconZoomH);
-    connect(_action_zoomOutHorizontally, &QAction::triggered, this, &PlotWidget::on_zoomOutHorizontal_triggered);
-    connect(_action_zoomOutHorizontally, &QAction::triggered, this, &PlotWidget::undoableChange );
+    connect(_action_zoomOutHorizontally, &QAction::triggered, this, [this]() {on_zoomOutHorizontal_triggered(true); replot(); emit undoableChange();  });
 
     QIcon iconZoomV;
     iconZoomV.addFile(QStringLiteral(":/icons/resources/resize_vertical.png"), QSize(26, 26));
     _action_zoomOutVertically = new QAction(tr("&Zoom Out Vertically"), this);
     _action_zoomOutVertically->setIcon(iconZoomV);
     connect(_action_zoomOutVertically, &QAction::triggered, this, &PlotWidget::on_zoomOutVertical_triggered);
+    connect(_action_zoomOutVertically, &QAction::triggered, this, &PlotWidget::replot);
     connect(_action_zoomOutVertically, &QAction::triggered, this, &PlotWidget::undoableChange );
 
     _action_noTransform = new QAction(tr("&NO Transform"), this);
