@@ -24,7 +24,7 @@
    <item>
     <widget class="QListWidget" name="listCurveWidget">
      <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
+      <enum>QAbstractItemView::NoSelection</enum>
      </property>
      <property name="sortingEnabled">
       <bool>true</bool>

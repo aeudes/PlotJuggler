@@ -953,7 +953,7 @@ void PlotWidget::launchRemoveCurveDialog()
 
     for(auto& it: _curve_list)
     {
-        dialog->addCurveName( QString::fromStdString( it.first ) );
+        dialog->addCurveName( QString::fromStdString( it.first ), it.second->pen().color() );
     }
 
     dialog->exec();

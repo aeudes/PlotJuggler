@@ -17,7 +17,7 @@ public:
     explicit RemoveCurveDialog(QWidget *parent);
     ~RemoveCurveDialog();
 
-    void addCurveName(const QString& name);
+    void addCurveName(const QString& name, const QColor& color=Qt::black);
 
 private slots:
     void on_listCurveWidget_itemClicked(QListWidgetItem *item);

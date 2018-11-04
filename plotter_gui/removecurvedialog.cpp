@@ -15,9 +15,11 @@ RemoveCurveDialog::~RemoveCurveDialog()
     delete ui;
 }
 
-void RemoveCurveDialog::addCurveName(const QString &name)
-{
-    ui->listCurveWidget->addItem( new QListWidgetItem( name ) );
+void RemoveCurveDialog::addCurveName(const QString &name, const QColor &color )
+{   
+   QListWidgetItem* item = new QListWidgetItem( name );
+   item->setForeground(color);
+   ui->listCurveWidget->addItem(item);
 }
 
 void RemoveCurveDialog::on_listCurveWidget_itemClicked(QListWidgetItem *item)
