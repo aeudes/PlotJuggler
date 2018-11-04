@@ -42,35 +42,30 @@ void RemoveCurveDialog::on_pushButtonRemove_pressed()
             if( item->font().strikeOut() && item->isHidden() == false)
             {
                 parent->removeCurve( item->text().toStdString() );
-                item->setHidden( true );
             }
         }
     }
-    closeIfEmpty();
+    this->accept();
 }
 
 void RemoveCurveDialog::on_pushButtonSelectAll_pressed()
+{
+  setAll(true);
+}
+
+void RemoveCurveDialog::on_pushButtonClear_pressed()
+{
+  setAll(false);
+}
+
+void RemoveCurveDialog::setAll(bool state)
 {
     for(int index = 0; index <ui->listCurveWidget->count(); ++index)
     {
         QListWidgetItem* item = ui->listCurveWidget->item( index );
         QFont f = item->font();
-        f.setStrikeOut( true );
+        f.setStrikeOut( state );
         item->setFont( f );
     }
 }
 
-void RemoveCurveDialog::closeIfEmpty()
-{
-    bool isEmpty = true;
-    for(int index = 0; index <ui->listCurveWidget->count(); ++index)
-    {
-        QListWidgetItem* item = ui->listCurveWidget->item( index );
-        if( item->isHidden() == false)
-        {
-            isEmpty = false;
-            break;
-        }
-    }
-    if( isEmpty ) this->accept();
-}

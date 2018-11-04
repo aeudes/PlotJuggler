@@ -41,14 +41,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonRemove">
+      <widget class="QPushButton" name="pushButtonClear">
        <property name="text">
-        <string>Remove selected</string>
+        <string>Clear selection</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonDone">
+      <widget class="QPushButton" name="pushButtonRemove">
        <property name="text">
         <string>Done</string>
        </property>
@@ -59,22 +59,4 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>pushButtonDone</sender>
-   <signal>pressed()</signal>
-   <receiver>RemoveCurveDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>327</x>
-     <y>273</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
 </ui>

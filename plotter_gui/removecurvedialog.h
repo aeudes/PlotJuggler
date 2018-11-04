@@ -26,10 +26,12 @@ private slots:
 
     void on_pushButtonSelectAll_pressed();
 
+    void on_pushButtonClear_pressed();
+
 private:
     Ui::RemoveCurveDialog *ui;
 
-    void closeIfEmpty();
+    void setAll(bool state);
 };
 
 #endif // REMOVECURVEDIALOG_H
