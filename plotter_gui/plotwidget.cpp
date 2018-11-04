@@ -112,6 +112,7 @@ PlotWidget::PlotWidget(PlotDataMapRef &datamap, QWidget *parent):
     connect(_magnifier, &PlotMagnifier::rescaled, this, &PlotWidget::replot );
 
     _panner->setMouseButton(  Qt::LeftButton, Qt::ControlModifier);
+    connect(_panner, &QwtPlotPanner::panned, this, &PlotWidget::on_panned );
 
     //-------------------------
 
@@ -1030,6 +1031,10 @@ void PlotWidget::on_externallyResized(const QRectF& rect)
     }
 }
 
+void PlotWidget::on_panned(int dx, int dy)
+{
+    on_externallyResized(currentBoundingRect());
+};
 
 void PlotWidget::zoomOut(bool emit_signal)
 {
