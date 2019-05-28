@@ -1891,6 +1891,16 @@ void MainWindow::updateDataAndReplot(bool replot_hidden_tabs)
 void MainWindow::on_streamingSpinBox_valueChanged(int value)
 {
     double real_value = value;
+    if ( value == ui->streamingSpinBox->maximum())
+    {
+       real_value = std::numeric_limits<double>::max();
+       ui->streamingSpinBox->setStyleSheet("QSpinBox { color: red; }");
+       ui->streamingSpinBox->setSuffix("=inf");
+    }
+    else{
+       ui->streamingSpinBox->setStyleSheet("QSpinBox { color: black; }");
+       ui->streamingSpinBox->setSuffix(" sec");
+    }
 
     if( isStreamingActive() == false)
     {
