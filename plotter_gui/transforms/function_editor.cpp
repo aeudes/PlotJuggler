@@ -89,7 +89,14 @@ AddCustomPlotDialog::~AddCustomPlotDialog()
 
 void AddCustomPlotDialog::setLinkedPlotName(const QString &linkedPlotName)
 {
-    ui->combo_linkedChannel->setCurrentText(linkedPlotName);
+    
+    int idx = ui->combo_linkedChannel->findText(linkedPlotName);
+    if (idx == -1)
+    {
+      idx = 0;
+      ui->combo_linkedChannel->insertItem(idx, linkedPlotName);
+    }
+    ui->combo_linkedChannel->setCurrentIndex(idx);
 }
 
 void AddCustomPlotDialog::setEditorMode(EditorMode mode)
@@ -119,7 +126,6 @@ QString AddCustomPlotDialog::getName() const
 {
     return ui->nameLineEdit->text();
 }
-
 
 void AddCustomPlotDialog::editExistingPlot(CustomPlotPtr data)
 {
