@@ -866,7 +866,7 @@ void MainWindow::deleteDataMultipleCurves(const std::vector<std::string> &curve_
         auto plot_curve = _mapped_plot_data.numeric.find( curve_name );
         if( plot_curve == _mapped_plot_data.numeric.end())
         {
-            return;
+          continue;
         }
 
         emit requestRemoveCurveByName( curve_name );
