@@ -19,8 +19,9 @@ bool CustomTimeseries::updateCache()
         _bounding_box = QRectF();
         return true;
     }
-
-    _transform.calculate( _mapped_data, &_cached_data );
+    //TODO update
+    std::vector<PlotData *> array = {&_cached_data};
+    _transform.calculate( _mapped_data, array );
     calculateBoundingBox();
 
     return true;

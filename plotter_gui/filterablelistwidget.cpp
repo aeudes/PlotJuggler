@@ -21,15 +21,27 @@ class SortedTableItem: public QStandardItem
 {
 
 public:
-    SortedTableItem(const QString& name): QStandardItem(name), str(name.toStdString()) {}
+    SortedTableItem(const QString& name, const QString& origin_name={} ): QStandardItem(name), _str(name.toStdString()) , _origin_name(origin_name.toStdString()) {}
 
     bool operator< (const SortedTableItem &other) const
     {
-        return doj::alphanum_impl(this->str.c_str(),
-                                  other.str.c_str()) < 0;
+        return doj::alphanum_impl(this->_str.c_str(),
+                                  other._str.c_str()) < 0;
     }
+
+    bool is_custom_plot()
+    {
+      return !_origin_name.empty();
+    }
+
+    std::string get_origin_name()
+    {
+      return _origin_name;
+    }
+
 private:
-    std::string str;
+    std::string _str;
+    std::string _origin_name;
 };
 
 
@@ -109,14 +121,14 @@ void FilterableListWidget::clear()
     ui->labelNumberDisplayed->setText( "0 of 0");
 }
 
-void FilterableListWidget::addItem(const QString &item_name)
+void FilterableListWidget::addItem(const QString &item_name,const QString & origin_name)
 {
     if( _model->findItems(item_name).size() > 0)
     {
         return;
     }
 
-    auto item = new SortedTableItem(item_name);
+    auto item = new SortedTableItem(item_name, origin_name);
     QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
     font.setPointSize(_point_size);
     item->setFont(font);
@@ -335,7 +347,7 @@ bool FilterableListWidget::eventFilter(QObject *object, QEvent *event)
     return QWidget::eventFilter(object,event);
 }
 
-std::vector<std::string> FilterableListWidget::getNonHiddenSelectedRows()
+std::vector<std::string> FilterableListWidget::getNonHiddenSelectedRows(bool use_custom_names)
 {
     std::vector<std::string> non_hidden_list;
 
@@ -346,7 +358,16 @@ std::vector<std::string> FilterableListWidget::getNonHiddenSelectedRows()
             if (!table_view->isRowHidden(selected_index.row()))
             {
                 auto item = _model->item( selected_index.row(), 0 );
-                non_hidden_list.push_back(item->text().toStdString());
+                if (!use_custom_names || table_view == ui->tableView)
+                {
+                  non_hidden_list.push_back(item->text().toStdString());
+                }
+                else
+                {
+                  non_hidden_list.push_back(item->text().toStdString());
+                  non_hidden_list.push_back(static_cast<SortedTableItem*>(item)->get_origin_name());
+                }
+
             }
         }
     }
@@ -458,7 +479,7 @@ void FilterableListWidget::on_lineEdit_textChanged(const QString &search_string)
         if( toHide != ui->tableView->isRowHidden(row) ) updated = true;
 
         const auto name_std = name.toStdString();
-        const bool is_custom_plot = _custom_plots.count(name_std) > 0;
+        const bool is_custom_plot = dynamic_cast <SortedTableItem*>(item)->is_custom_plot();
 
 
         ui->tableView->setRowHidden(row, toHide || is_custom_plot );
@@ -501,7 +522,7 @@ void FilterableListWidget::removeSelectedCurves()
 
     if (reply == QMessageBox::Yes)
     {
-        emit deleteCurves(getNonHiddenSelectedRows());
+        emit deleteCurves(getNonHiddenSelectedRows(true));
     }
 
     // rebuild the tree model
@@ -583,7 +604,8 @@ void FilterableListWidget::on_buttonEditCustom_clicked()
     }
 
     auto item = _model->item( selected_index.row(), 0 );
-    editMathPlot( item->text().toStdString() );
+    editMathPlot( static_cast<SortedTableItem*>(item)->get_origin_name() );
+    on_lineEdit_textChanged( ui->lineEdit->text() );
 }
 
 void FilterableListWidget::clearSelections()

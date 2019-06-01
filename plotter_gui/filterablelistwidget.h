@@ -32,7 +32,7 @@ public:
 
     void clear();
 
-    void addItem(const QString& item_name);
+    void addItem(const QString& item_name, const QString& origin_name={});
 
     void refreshColumns();
 
@@ -101,8 +101,8 @@ private:
     bool eventFilter(QObject *object, QEvent *event) override;
 
     void updateTreeModel();
-    
-    std::vector<std::string> getNonHiddenSelectedRows();
+
+    std::vector<std::string> getNonHiddenSelectedRows(bool use_custom_names = false);
 
     bool _completer_need_update;
 

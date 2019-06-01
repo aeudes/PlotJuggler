@@ -41,10 +41,12 @@ public:
                    const SnippetData &snippet);
 
     void calculateAndAdd(PlotDataMapRef &plotData);
-
-    void calculate(const PlotDataMapRef &plotData, PlotData *dst_data);
+    void update(PlotDataMapRef &plotData);
+    void calculate(const PlotDataMapRef &plotData, std::vector<PlotData *> & dst_data_array);
 
     const std::string& name() const;
+
+    const std::vector<std::string> & plot_names() const;
 
     const std::string& linkedPlotName() const;
 
@@ -61,14 +63,15 @@ public:
 private:
     void initJsEngine();
 
-    PlotData::Point  calculatePoint(QJSValue &calcFct,
+    std::vector<PlotData::Point>  calculatePoint(QJSValue &calcFct,
                                     const PlotData &src_data,
                                     const std::vector<const PlotData *> &channels_data,
                                     QJSValue &chan_values,
                                     size_t point_index);
 
     const std::string _linked_plot_name;
-    const std::string _plot_name;
+    std::string _name;
+    std::vector<std::string> _plot_names;
     const QString _global_vars;
     const QString _function;
     QString _function_replaced;
@@ -77,6 +80,3 @@ private:
     std::unique_ptr<QJSEngine> _jsEngine;
     double _last_updated_timestamp;
 };
-
-
-

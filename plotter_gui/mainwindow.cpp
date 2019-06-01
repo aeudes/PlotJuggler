@@ -861,7 +861,22 @@ bool MainWindow::xmlLoadState(QDomDocument state_document)
 
 void MainWindow::deleteDataMultipleCurves(const std::vector<std::string> &curve_names)
 {
+    std::vector<std::string> all_curve_names = curve_names;
+
     for( const auto& curve_name: curve_names )
+    {
+        auto custom_it = _custom_plots.find( curve_name );
+        if( custom_it != _custom_plots.end())
+        {
+            for (auto & plot_name : custom_it->second->plot_names())
+            {
+              all_curve_names.push_back(plot_name);
+            }
+            _custom_plots.erase( custom_it );
+        }
+    }
+
+    for( const auto& curve_name: all_curve_names )
     {
         auto plot_curve = _mapped_plot_data.numeric.find( curve_name );
         if( plot_curve == _mapped_plot_data.numeric.end())
@@ -871,12 +886,6 @@ void MainWindow::deleteDataMultipleCurves(const std::vector<std::string> &curve_
 
         emit requestRemoveCurveByName( curve_name );
         _mapped_plot_data.numeric.erase( plot_curve );
-
-        auto custom_it = _custom_plots.find( curve_name );
-        if( custom_it != _custom_plots.end())
-        {
-            _custom_plots.erase( custom_it );
-        }
 
         int row = _curvelist_widget->findRowByName( curve_name );
         if( row != -1 )
@@ -1813,7 +1822,13 @@ bool MainWindow::loadLayoutFromFile(QString filename)
                 const auto& name = new_custom_plot->name();
                 _custom_plots[name] = new_custom_plot;
                 new_custom_plot->calculateAndAdd( _mapped_plot_data );
-                _curvelist_widget->addItem( QString::fromStdString( name ) );
+                for (const auto & plot_name : new_custom_plot->plot_names())
+                {
+                  _curvelist_widget->addItem(
+                        QString::fromStdString(plot_name) 
+                       ,QString::fromStdString(name)
+                  );
+                }
             }
             _curvelist_widget->refreshColumns();
         }
@@ -2091,8 +2106,7 @@ void MainWindow::updateDataAndReplot(bool replot_hidden_tabs)
 
         for( auto& custom_it: _custom_plots)
         {
-            auto* dst_plot = &_mapped_plot_data.numeric.at(custom_it.first);
-            custom_it.second->calculate(_mapped_plot_data, dst_plot);
+            custom_it.second->update(_mapped_plot_data);
         }
     }
 
@@ -2456,14 +2470,21 @@ void MainWindow::addOrEditMathPlot(const std::string &name, bool modifying)
             _custom_plots.insert( {plot_name, eq} );
         }
         else{
+	    std::vector<std::string> plots_to_remove;
+	    std::vector<std::string> newplots = eq->plot_names();
+	    for(const auto& old_plot : custom_it->second->plot_names())
+	    {
+              if (std::find(std::begin(newplots),std::end(newplots),old_plot) == std::end(newplots))
+                plots_to_remove.push_back(old_plot);
+            }
+	    deleteDataMultipleCurves(plots_to_remove);
             custom_it->second = eq;
             modifying = true;
         }
 
-        if(!modifying)
-        {
-            _curvelist_widget->addItem(qplot_name);
-        }
+        for (const auto & plot_name  : eq->plot_names())
+              _curvelist_widget->addItem(QString::fromStdString(plot_name), QString::fromStdString(eq->name()));
+
         onUpdateLeftTableValues();
 
         if(modifying)
