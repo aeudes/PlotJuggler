@@ -1146,7 +1146,7 @@ bool MainWindow::loadDataFromFile(const FileLoadInfo& info)
 
             if( dataloader->readDataFromFile( &new_info, mapped_data ) )
             {
-                AddPrefixToPlotData( info.prefix.toStdString(), mapped_data.numeric );
+                AddPrefixToPlotData( new_info.prefix.toStdString(), mapped_data.numeric );
 
                 importPlotDataMap(mapped_data, true);     
 
