@@ -80,18 +80,11 @@ void DataStreamROS::topicCallback(const topic_tools::ShapeShifter::ConstPtr& msg
         // clean
         for (auto& it: dataMap().numeric ) {
             it.second.clear();
-            auto dst = _destination_data->numeric.find(it.first);
-            if( dst != _destination_data->numeric.end()){
-                dst->second.clear();
-            }
         }
         for (auto& it: dataMap().user_defined ){
             it.second.clear();
-            auto dst = _destination_data->user_defined.find(it.first);
-            if( dst != _destination_data->user_defined.end()){
-                dst->second.clear();
-            }
         }
+	emit clearBuffers();
     }
     _prev_clock_time = msg_time;
 

@@ -553,7 +553,7 @@ void MainWindow::initializePlugins(QString directory_name)
                             ui->actionStopStreaming, &QAction::trigger );
 
                     connect(streamer, &DataStreamer::clearBuffers,
-                            this, &MainWindow::on_actionClearBuffer_triggered );
+                            this, [this, streamer](){this->on_actionClearStreamBuffer_triggered(streamer);});
                 }
             }
         }
@@ -2085,6 +2085,37 @@ void MainWindow::on_pushButtonPlay_toggled(bool checked)
         _publish_timer->stop();
     }
 }
+
+
+void MainWindow::on_actionClearStreamBuffer_triggered(DataStreamer * stream)
+{
+        std::lock_guard<std::mutex> lock(stream->mutex());
+
+        for (auto& it: stream->dataMap().numeric ) {
+            auto dst = _mapped_plot_data.numeric.find(it.first);
+            if( dst != _mapped_plot_data.numeric.end()){
+                dst->second.clear();
+            }
+        }
+        for (auto& it: stream->dataMap().user_defined ){
+            auto dst = _mapped_plot_data.user_defined.find(it.first);
+            if( dst != _mapped_plot_data.user_defined.end()){
+                dst->second.clear();
+            }
+        }
+
+        for (auto& it: _custom_plots )
+        {
+          it.second->clear();
+          auto dst = _mapped_plot_data.numeric.find(it.second->name());
+          if( dst != _mapped_plot_data.numeric.end()){
+              dst->second.clear();
+	  }
+        }
+ 
+}
+
+
 
 void MainWindow::on_actionClearBuffer_triggered()
 {

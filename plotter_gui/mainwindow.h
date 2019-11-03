@@ -191,6 +191,7 @@ public slots:
 
     void on_actionDeleteAllData_triggered();
     void on_actionClearBuffer_triggered();
+    void on_actionClearStreamBuffer_triggered(DataStreamer*);
 
     void on_actionFullscreen_triggered();
 
