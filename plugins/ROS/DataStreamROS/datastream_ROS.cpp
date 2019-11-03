@@ -80,14 +80,14 @@ void DataStreamROS::topicCallback(const topic_tools::ShapeShifter::ConstPtr& msg
 
     if( msg_time < _prev_clock_time )
     {
-        // clear
+        // clean
         for (auto& it: dataMap().numeric ) {
             it.second.clear();
         }
         for (auto& it: dataMap().user_defined ){
             it.second.clear();
         }
-        emit clearBuffers();
+	emit clearBuffers();
     }
     _prev_clock_time = msg_time;
 
